@@ -39,10 +39,10 @@ python -m ipykernel install --user --name HyperST
 
 ```r
 install.packages("devtools")
-install.packages("remotes", repos = "[https://cloud.r-project.org](https://cloud.r-project.org)")
+install.packages("remotes", repos = "https://cloud.r-project.org")
 
 # Install mclust
-remotes::install_version("mclust", version = "6.1.1", repos = "[https://cloud.r-project.org](https://cloud.r-project.org)")
+remotes::install_version("mclust", version = "6.1.1", repos = "https://cloud.r-project.org")
 
 # Install SPARK from GitHub
 devtools::install_github("xzhoulab/SPARK")
