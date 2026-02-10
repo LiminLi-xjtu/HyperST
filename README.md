@@ -17,11 +17,33 @@ conda create -n HyperST python=3.9.19 r-base=4.3.1
 
 # Activate environment
 conda activate HyperST
+```
 
+### 2) Install dependencies
+
+```bash
 conda install r-essentials
 conda install -c conda-forge pkg-config
 pip install -r requirements.txt
+```
 
-conda install r-essentials
-conda install -c conda-forge pkg-config
-pip install -r requirements.txt
+### 3) (Optional) Register the environment as a Jupyter kernel
+
+```bash
+python -m ipykernel install --user --name HyperST
+```
+
+### 4) Install required R packages
+
+> **Note:** Run the following commands in the R console.
+
+```r
+install.packages("devtools")
+install.packages("remotes", repos = "[https://cloud.r-project.org](https://cloud.r-project.org)")
+
+# Install mclust
+remotes::install_version("mclust", version = "6.1.1", repos = "[https://cloud.r-project.org](https://cloud.r-project.org)")
+
+# Install SPARK from GitHub
+devtools::install_github("xzhoulab/SPARK")
+```
