@@ -2,7 +2,7 @@
 ## Overview
 HyperST: hypergraph learning with graph-guided contrastive refinement for spatial domain identification.
 <img src="HyperST.jpg" width="600" />
-HyperST identifies spatial domains by learning low-dimensional embeddings from two complementary hypergraphs: a spatial hypergraph constructed from spatial coordinates using kNN and an attribute hypergraph built from expression similarity over spatially variable genes. These two views are integrated through cross-fusion and an attention mechanism. In addition, HyperST can leverage standard graph structure by introducing contrastive learning between hypergraph and graph views to enhance representation quality.    Notably, for large-scale datasets, we do not recommend enabling the contrastive module due to memory constraints.
+HyperST identifies spatial domains by learning low-dimensional embeddings from two complementary hypergraphs: a **spatial hypergraph** constructed from spatial coordinates using kNN and an **attribute hypergraph** built from expression similarity over spatially variable genes. These two views are integrated through cross-fusion and an attention mechanism. In addition, HyperST can leverage standard graph structure by introducing contrastive learning between hypergraph and graph views to enhance representation quality. Notably, for large-scale datasets, we do not recommend enabling the contrastive module due to memory constraints.
 
 ## Getting Started
 ### System Requirements
@@ -57,3 +57,15 @@ For a detailed demonstration of **HyperST**, please refer to the tutorial notebo
 This notebook provides a step-by-step guide on how to run the model.
 
 > **Note:** Please replace `R_HOME` and `R_USER` with your local R installation paths before running.
+
+## Data availability
+
+All datasets used in this study are publicly available:
+
+1. **Human dorsolateral prefrontal cortex (DLPFC)** dataset: http://spatial.libd.org/spatialLIBD.  
+2. **Human breast cancer** dataset: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0.  
+3. **Mouse olfactory bulb** dataset: https://github.com/JinmiaoChenLab/SEDR_analyses.  
+4. **Mouse hippocampus** dataset: https://singlecell.broadinstitute.org/single_cell/study/SCP354/slide-seq-study.  
+5. **Mouse visual cortex** dataset: https://www.dropbox.com/sh/f7ebheru1lbz91s/AADm6D54GSEFXB1feRy6OSASa/visual_1020/20180505_BY3_1kgenes?dl=0&subfolder_nav_tracking=1.  
+6. **Mouse somatosensory cortex** dataset: https://linnarssonlab.org/osmFISH/.
+
