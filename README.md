@@ -21,3 +21,7 @@ conda activate HyperST
 conda install r-essentials
 conda install -c conda-forge pkg-config
 pip install -r requirements.txt
+
+conda install r-essentials
+conda install -c conda-forge pkg-config
+pip install -r requirements.txt
