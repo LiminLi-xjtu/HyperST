@@ -55,3 +55,5 @@ For a detailed demonstration of **HyperST**, please refer to the tutorial notebo
 * [**DLPFC_Tutorial.ipynb**](./DLPFC_Tutorial.ipynb)
 
 This notebook provides a step-by-step guide on how to run the model.
+
+> **Note:** Please replace `R_HOME` and `R_USER` with your local R installation paths before running.
