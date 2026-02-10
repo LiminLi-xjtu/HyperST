@@ -1,0 +1,31 @@
+# ---------- PyTorch (CUDA 12.1 / cu121) ----------
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+torch==2.4.1
+
+
+# ---------- PyG (torch-geometric + compiled extensions) ----------
+torch-geometric==2.6.0
+
+# PyG extension wheels matching torch 2.4.1 + cu121
+-f https://data.pyg.org/whl/torch-2.4.1+cu121.html
+pyg-lib
+torch-scatter
+torch-sparse
+torch-cluster
+torch-spline-conv
+
+# ---------- Scientific stack ----------
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+scikit-learn==1.5.2
+scikit-misc==0.3.1
+matplotlib==3.9.2
+tqdm==4.66.5
+scanpy==1.10.3
+anndata==0.10.9
+cvxpy==1.5.3
+pot==0.9.4
+ipykernel
+rpy2==3.5.11
