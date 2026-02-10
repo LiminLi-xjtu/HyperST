@@ -7,7 +7,7 @@ HyperST identifies spatial domains by learning low-dimensional embeddings from t
 ## Getting Started
 ### System Requirements
 
-HyperST is implemented in **Python 3.9.19** and requires an R environment (**R 4.3.1**) for installing SPARK-related dependencies.
+HyperST is implemented in **Python 3.9.19** and requires an R environment (**R 4.3.1**) for installing SPARK-X related dependencies.
 
 ### 1) Create and activate a conda environment
 
@@ -47,3 +47,11 @@ remotes::install_version("mclust", version = "6.1.1", repos = "[https://cloud.r-
 # Install SPARK from GitHub
 devtools::install_github("xzhoulab/SPARK")
 ```
+
+## Tutorial
+
+For a detailed demonstration of **HyperST**, please refer to the tutorial notebook:
+
+* [**DLPFC_Tutorial.ipynb**](./DLPFC_Tutorial.ipynb)
+
+This notebook provides a step-by-step guide on how to run the model.
