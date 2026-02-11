@@ -67,6 +67,7 @@ Please initialize the model as follows:
 
 ```python
 Hyper_model = HyperModel_Train_sparse(adata, H_gene, H_spatial, params=args, init=args.init)
+```
 
 ## Data availability
 
