@@ -59,6 +59,15 @@ This notebook provides a step-by-step guide on how to run the model.
 
 > **Note:** Please replace `R_HOME` and `R_USER` with your local R installation paths before running.
 
+### Large-scale Datasets (Stereo-seq / Slide-seqV2)
+
+For large-scale datasets such as **Stereo-seq** and **Slide-seqV2**, we recommend using the sparse version of the model to optimize memory usage. 
+
+Please initialize the model as follows:
+
+```python
+Hyper_model = HyperModel_Train_sparse(adata, H_gene, H_spatial, params=args, init=args.init)
+
 ## Data availability
 
 All datasets used in this study are publicly available:
