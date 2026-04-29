@@ -24,7 +24,7 @@ conda activate HyperST
 
 ```bash
 conda install r-essentials
-conda install -c conda-forge pkg-config
+conda install -c conda-forge libuv pkg-config cmake make compilers
 pip install -r requirements.txt
 ```
 
