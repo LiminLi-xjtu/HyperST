@@ -108,7 +108,7 @@ def construct_H_from_attribute_matrix(adata,nSE=3000):
     adata1=adata.copy()
     # sc.pp.filter_genes(adata, max_cells=2000)
 
-    sc.pp.filter_genes(adata,min_counts=10)
+    sc.pp.filter_genes(adata,min_counts=5)
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
 
