@@ -1,7 +1,7 @@
 # HyperST
 ## Overview
 HyperST: hypergraph learning with graph-guided contrastive refinement for spatial domain identification.
-<img src="HyperST.jpg" width="600" />
+<img src="HyperST.jpg" width="700" />
 
 HyperST identifies spatial domains by learning low-dimensional embeddings from two complementary hypergraphs: a **spatial hypergraph** constructed from spatial coordinates using kNN and an **attribute hypergraph** constructed by feature reconstruction over spatially variable genes. These two views are integrated through cross-fusion and an attention mechanism. In addition, HyperST can leverage standard graph structure by introducing contrastive learning between hypergraph and graph views to enhance representation quality. Notably, for large-scale datasets,  we do not recommend enabling the contrastive module due to memory constraints.
 
