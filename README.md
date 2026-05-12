@@ -70,15 +70,8 @@ EOF
 Then reinstall SPARK in the R console:
 
 ```r
-remotes::install_github("xzhoulab/SPARK", upgrade = "never")
+remotes::install_github("xzhoulab/SPARK")
 ```
-
-You can test whether SPARK is successfully installed by running:
-
-```r
-library(SPARK)
-```
-
 
 ## Tutorial
 
