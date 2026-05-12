@@ -96,7 +96,7 @@ Hyper_model=HyperSTModel_Train_sparse(adata,H_gene,H_spatial,params=args,init=ar
 
 ### Spatial domain identification
 
-HyperST provides two options for spatial domain identification. For 10x Visium datasets such as **DLPFC** and **BRCA**, we recommend using DEC-based clustering. For high-resolution datasets, including **Stereo-seq MOB**, **Slide-seqV2 MBH**, **osmFISH MSC**, and **STARmap MVC**, we recommend applying Mclust to the learned low-dimensional embedding:
+HyperST provides two options for spatial domain identification. For 10x Visium datasets such as **DLPFC** and **BRCA**, we recommend using DEC-based clustering. For high-resolution datasets, including **MOB**, **MBH**, **MSC**, and **MVC**, we recommend applying Mclust to the learned low-dimensional embedding:
 
 ```python
 mclust_R(adata, num_cluster=args.n_domains, used_obsm='HyperST', random_seed=args.seed)
@@ -107,9 +107,9 @@ mclust_R(adata, num_cluster=args.n_domains, used_obsm='HyperST', random_seed=arg
 All datasets used in this study are publicly available:
 
 1. **Human dorsolateral prefrontal cortex (DLPFC)** dataset: http://spatial.libd.org/spatialLIBD.  
-2. **Human breast cancer** dataset: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0.  
-3. **Mouse olfactory bulb** dataset: https://github.com/JinmiaoChenLab/SEDR_analyses.  
-4. **Mouse hippocampus** dataset: https://singlecell.broadinstitute.org/single_cell/study/SCP354/slide-seq-study.  
-5. **Mouse visual cortex** dataset: https://www.dropbox.com/sh/f7ebheru1lbz91s/AADm6D54GSEFXB1feRy6OSASa/visual_1020/20180505_BY3_1kgenes?dl=0&subfolder_nav_tracking=1.  
-6. **Mouse somatosensory cortex** dataset: https://linnarssonlab.org/osmFISH/.
+2. **Human breast cancer (BRCA)** dataset: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0.  
+3. **Mouse olfactory bulb (MOB)** dataset: https://github.com/JinmiaoChenLab/SEDR_analyses.  
+4. **Mouse hippocampus (MBH)** dataset: https://singlecell.broadinstitute.org/single_cell/study/SCP354/slide-seq-study.  
+5. **Mouse visual cortex (MVC)** dataset: https://www.dropbox.com/sh/f7ebheru1lbz91s/AADm6D54GSEFXB1feRy6OSASa/visual_1020/20180505_BY3_1kgenes?dl=0&subfolder_nav_tracking=1.  
+6. **Mouse somatosensory cortex (MSC)** dataset: https://linnarssonlab.org/osmFISH/.
 
