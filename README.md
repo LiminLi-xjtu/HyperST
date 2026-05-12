@@ -48,9 +48,36 @@ remotes::install_github("xzhoulab/SPARK")
 ```
 ### 5) Optional: Fix SPARK compilation error related to C++ standard
 
-In some conda-based R environments, installing SPARK may fail with a C++ standard error such as:
+In some conda-based R environments, installing SPARK may fail with the following C++ standard error:
 
+```text
 #error "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+```
+
+This is usually because SPARK requests `C++11` during compilation, while newer versions of `RcppArmadillo` / `Armadillo` require `C++14`. If this error occurs, run the following commands in the activated conda environment:
+
+```bash
+conda activate HyperST
+
+cat > "$CONDA_PREFIX/lib/R/etc/Makevars.site" <<'EOF'
+# Force C++14 for old R packages that request CXX11
+CXX11STD = -std=gnu++14
+CXX14STD = -std=gnu++14
+CXX17STD = -std=gnu++17
+EOF
+```
+
+Then reinstall SPARK in the R console:
+
+```r
+remotes::install_github("xzhoulab/SPARK", upgrade = "never")
+```
+
+You can test whether SPARK is successfully installed by running:
+
+```r
+library(SPARK)
+```
 
 
 ## Tutorial
