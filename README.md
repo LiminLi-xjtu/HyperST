@@ -23,8 +23,7 @@ conda activate HyperST
 ### 2) Install dependencies
 
 ```bash
-conda install r-essentials
-conda install -c conda-forge libuv pkg-config cmake make compilers
+conda install -c conda-forge -y r-essentials libuv pkg-config cmake make compilers gxx_linux-64 gfortran_linux-64
 pip install -r requirements.txt
 ```
 
@@ -39,15 +38,20 @@ python -m ipykernel install --user --name HyperST
 > **Note:** Run the following commands in the R console.
 
 ```r
-install.packages("devtools")
 install.packages("remotes", repos = "https://cloud.r-project.org")
 
 # Install mclust
 remotes::install_version("mclust", version = "6.1.1", repos = "https://cloud.r-project.org")
 
 # Install SPARK from GitHub
-devtools::install_github("xzhoulab/SPARK")
+remotes::install_github("xzhoulab/SPARK")
 ```
+### 5) Optional: Fix SPARK compilation error related to C++ standard
+
+In some conda-based R environments, installing SPARK may fail with a C++ standard error such as:
+
+#error "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+
 
 ## Tutorial
 
