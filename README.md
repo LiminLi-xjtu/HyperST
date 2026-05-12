@@ -27,13 +27,7 @@ conda install -c conda-forge -y r-essentials libuv pkg-config cmake make compile
 pip install -r requirements.txt
 ```
 
-### 3) (Optional) Register the environment as a Jupyter kernel
-
-```bash
-python -m ipykernel install --user --name HyperST
-```
-
-### 4) Install required R packages
+### 3) Install required R packages
 
 > **Note:** Run the following commands in the R console.
 
@@ -46,6 +40,13 @@ remotes::install_version("mclust", version = "6.1.1", repos = "https://cloud.r-p
 # Install SPARK from GitHub
 remotes::install_github("xzhoulab/SPARK")
 ```
+
+### 4) Optional: Register the environment as a Jupyter kernel
+
+```bash
+python -m ipykernel install --user --name HyperST
+```
+
 ### 5) Optional: Fix SPARK compilation error related to C++ standard
 
 In some conda-based R environments, installing SPARK may fail with the following C++ standard error:
