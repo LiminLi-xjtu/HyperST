@@ -94,6 +94,14 @@ Please initialize the model as follows:
 Hyper_model=HyperSTModel_Train_sparse(adata,H_gene,H_spatial,params=args,init=args.init)
 ```
 
+### Spatial domain identification
+
+HyperST provides two options for spatial domain identification. For 10x Visium datasets such as **DLPFC** and **BRCA**, we recommend using DEC-based clustering. For high-resolution datasets, including **Stereo-seq MOB**, **Slide-seqV2 MBH**, **osmFISH MSC**, and **STARmap MVC**, we recommend applying Mclust to the learned low-dimensional embedding:
+
+```python
+mclust_R(adata, num_cluster=args.n_domains, used_obsm='HyperST', random_seed=args.seed)
+```
+
 ## Data availability
 
 All datasets used in this study are publicly available:
