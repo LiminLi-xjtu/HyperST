@@ -52,7 +52,7 @@ python -m ipykernel install --user --name HyperST
 In some conda-based R environments, installing SPARK may fail with the following C++ standard error:
 
 ```text
-#error "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+#error  "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
 ```
 
 This is usually because SPARK requests `C++11` during compilation, while newer versions of `RcppArmadillo` / `Armadillo` require `C++14`. If this error occurs, run the following commands in the activated conda environment:
