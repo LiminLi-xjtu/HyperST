@@ -46,16 +46,6 @@ profiles = {
                 preprocessing="counts", spatial_mode="knn", spatial_knn=10),
 }
 
-# profiles = {
-#     "DLPFC": dict(label="DLPFC (151509)", path="DLPFC/151509", model_mode="full", spots=4789,
-#                   n_domains=7, epochs=200, 
-#                   init="mclust", final_clustering="deep", preprocessing="counts",
-#                   spatial_mode="knn", spatial_knn=6),
-#     "MBH": dict(label="MBH", path="Slide-seqv2_Hippocampus/Hippocampus.h5ad", model_mode="simplified",
-#                 spots=41786, n_domains=10, epochs=200, init="mclust", final_clustering="mclust",
-#                 preprocessing="log_normalized", spatial_radius=40),
-# }
-
 parser = set_arg()
 
 parser.set_defaults(tol=-1.0, mode_knn="radius", radius=40)
@@ -67,8 +57,6 @@ defaults.update(pcs=base_args.latent_dim, hidden_dim=base_args.hidden_dim1,
                 n_hvg=3000, n_svg=3000, min_gene_cells=0, kmeans_n_init=20,
                 gene_knn=6, elastic_gamma=1.0, elastic_beta=0.1, elastic_solver="auto"
                 )
-
-
 
 metrics = {
     "runtime_seconds": "Runtime (s)",
