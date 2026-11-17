@@ -84,7 +84,7 @@ This notebook provides a step-by-step guide on how to run the model.
 
 > **Note:** Please replace `R_HOME` and `R_USER` with your local R installation paths before running.
 
-### Large-scale Datasets (Stereo-seq / Slide-seqV2)
+### Large-scale datasets (Stereo-seq / Slide-seqV2)
 
 For large-scale datasets such as **Stereo-seq** and **Slide-seqV2**, we recommend using the sparse implementation of the simplified variant to reduce memory consumption.
 
@@ -101,6 +101,10 @@ HyperST provides two options for spatial domain identification. For 10x Visium d
 ```python
 mclust_R(adata, num_cluster=args.n_domains, used_obsm='HyperST', random_seed=args.seed)
 ```
+
+### Additional experiments
+
+The scripts for the additional experiments are provided in the [Experiments/](./Experiments/) directory.
 
 ## Data availability
 
