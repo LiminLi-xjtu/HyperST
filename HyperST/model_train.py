@@ -14,6 +14,8 @@ from torch.optim.lr_scheduler import LambdaLR
 
 
 def get_q(self, z):
+    # Adapted from SpaGCN:
+    # https://github.com/jianhuupenn/SpaGCN/blob/master/SpaGCN_package/SpaGCN/models.py
     q = 1.0 / ((1.0 + torch.sum((z.unsqueeze(1) - self.mu)**2, dim=2) / self.beta) + 1e-8)
     q = q**(self.beta+1.0)/2.0
     q = q / torch.sum(q, dim=1, keepdim=True)
@@ -46,10 +48,10 @@ def generate_G_from_H(H, variable_weight=False):
     # the degree of the hyperedge
     DE = np.sum(H, axis=0)
 
-    invDE = np.mat(np.diag(np.power(DE, -1)))
-    DV2 = np.mat(np.diag(np.power(DV, -0.5)))
-    W = np.mat(np.diag(W))
-    H = np.mat(H)
+    invDE = np.asmatrix(np.diag(np.power(DE, -1)))
+    DV2 = np.asmatrix(np.diag(np.power(DV, -0.5)))
+    W = np.asmatrix(np.diag(W))
+    H = np.asmatrix(H)
     HT = H.T
 
     if variable_weight:
@@ -60,6 +62,14 @@ def generate_G_from_H(H, variable_weight=False):
         G = DV2 * H * W * invDE * HT * DV2
         return G
 
+def generate_G_from_H_sparse(H):
+    H = H.tocsr().astype(np.float32)
+    dv = np.asarray(H.sum(axis=1)).ravel()
+    de = np.asarray(H.sum(axis=0)).ravel()
+    inv_dv = np.divide(1, np.sqrt(dv), out=np.zeros_like(dv), where=dv > 0)
+    inv_de = np.divide(1, de, out=np.zeros_like(de), where=de > 0)
+    Dv, De = sparse.diags(inv_dv), sparse.diags(inv_de)
+    return (Dv @ H @ De @ H.T @ Dv).tocsr().astype(np.float32)
 
 # def cosine_similarity(emb):
 #     mat = torch.matmul(emb, emb.T)
@@ -71,11 +81,11 @@ def generate_G_from_H(H, variable_weight=False):
 #     return mat
 
 
-# InfoNCE Loss Function
+# Contrastive Loss Function
 from torch.nn.functional import cosine_similarity
 def info_nce_loss(x_H, x_A, tau=0.2):
     """
-    Compute InfoNCE loss for collaborative contrastive learning.
+    Compute loss for collaborative contrastive learning.
 
     Parameters:
         x_H (torch.Tensor): Node representations from HGCN.
@@ -83,7 +93,7 @@ def info_nce_loss(x_H, x_A, tau=0.2):
         tau (float): Temperature parameter.
 
     Returns:
-        torch.Tensor: InfoNCE loss.
+        torch.Tensor: loss.
     """
     batch_size = x_H.size(0)
     sim_matrix = torch.sigmoid(torch.matmul(x_H, x_A.T))
@@ -95,11 +105,10 @@ def info_nce_loss(x_H, x_A, tau=0.2):
     negative_pairs = sim_matrix - torch.eye(batch_size, device=x_H.device) * sim_matrix
     negative_pairs = torch.clamp(negative_pairs, 1e-5, 1e6)
 
-    # Numerator and denominator for InfoNCE
     numerator = torch.exp(positive_pairs / tau)
     denominator = torch.sum(torch.exp(negative_pairs/ tau), dim=1)
 
-    # Compute InfoNCE loss
+    # Compute loss
     loss = -torch.log(numerator / denominator)
     return loss.mean()
 
@@ -132,42 +141,39 @@ class HyperSTModel_Train:
         self.seed=seed
         self.beta=0.5
         self.datatype=datatype
-
-        # self.X = torch.FloatTensor(adata.X.A).to(self.device)
         self.X = torch.FloatTensor(adata.obsm['X_pca']).to(self.device)
 
-        (row_gene, col_gene), value_gene = torch_sparse.from_scipy(incidence_gene)
         H_gene=incidence_gene.toarray().astype(np.float32)
         G_gene=generate_G_from_H(H_gene)
-        # self.row_gene=row_gene.to(self.device)
-        # self.col_gene=col_gene.to(self.device)
         self.G_gene=torch.FloatTensor(G_gene).to(self.device)
         self.H_gene=torch.FloatTensor(H_gene).to(self.device)
 
         if self.datatype not in ['Stereo','Slide-seq']:
-            self.G_gene111=torch.matmul(self.H_gene,self.H_gene.T)
+            self.A_gene=torch.matmul(self.H_gene,self.H_gene.T)
 
         (row_spa, col_spa), value_spa = torch_sparse.from_scipy(incidence_spatial)
         H_spatial=incidence_spatial.toarray()
         self.H_spatial=torch.FloatTensor(H_spatial).to(self.device)
 
         if self.datatype not in ['Stereo','Slide-seq']:
-            self.G_spatial=torch.matmul(self.H_spatial,self.H_spatial.T)
+            self.A_spatial=torch.matmul(self.H_spatial,self.H_spatial.T)
 
         self.row_spa=row_spa.to(self.device)
         self.col_spa=col_spa.to(self.device)
-        # self.G_spatial=torch.FloatTensor(G_spatial).to(self.device)
+        # self.A_spatial=torch.FloatTensor(A_spatial).to(self.device)
 
         if self.datatype in ['Stereo','Slide-seq']:
             self.model=HyperST_sparse(args=params,in_channels=params.latent_dim,out_channels=params.hidden_dim2, hidden_channels=params.hidden_dim1).to(self.device)
         else:
             self.model=HyperST(args=params,in_channels=params.latent_dim,out_channels=params.hidden_dim2, hidden_channels=params.hidden_dim1).to(self.device)
 
+        # Following the initialization procedure in SpaGCN.
+        # The optimizer is initialized before cluster centers are created.
         self.optimizer = optim.Adam(self.model.parameters(),lr=self.params.lr, weight_decay=self.params.weight_decay)
 
     def training_model(self):
         with torch.no_grad():
-            _, _,features,_,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.G_gene111,self.G_spatial)
+            _, _,features,_,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.A_gene,self.A_spatial)
      
         #----------------------------------------------------------------           
         if self.init=="kmeans":
@@ -199,20 +205,20 @@ class HyperSTModel_Train:
                 self.model.train()
                 
                 if epoch%self.params.update_interval == 0:
-                    _, _,embed,_,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.G_gene111,self.G_spatial)
+                    _, _,embed,_,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.A_gene,self.A_spatial)
                     Q = get_q(self,embed)
                     q = Q.detach().data.cpu().numpy().argmax(1)              
                     t.update(self.params.update_interval)
                     
-                z_gene, z_spa,embed,X_dec,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.G_gene111,self.G_spatial)
+                z_gene, z_spa,embed,X_dec,_,_ = self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.A_gene,self.A_spatial)
                 q = get_q(self,embed)
                 p = target_distribution(Q.detach())
             
                 KL_loss=iterative_loss(p, q)
-                info_loss1=info_nce_loss(z_spa,embed)
-                info_loss2=info_nce_loss(z_gene,embed)
+                info_loss1=info_nce_loss(z_gene,embed)
+                info_loss2=info_nce_loss(z_spa,embed)
                 reco_loss1=reconstruction_loss(X_dec,self.X)
-                loss=1.0*KL_loss+0.1*info_loss1+0.1*info_loss2+0.1*reco_loss1
+                loss=KL_loss+self.params.lambda_1 *reco_loss1+self.params.lambda_2*info_loss1+self.params.lambda_3*info_loss2
                 
 
                 self.optimizer.zero_grad()              
@@ -235,7 +241,7 @@ class HyperSTModel_Train:
     
     def predict(self):
         self.model.eval()
-        _, s2,z,_,_,_= self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.G_gene111,self.G_spatial)
+        _, s2,z,_,_,_= self.model(self.X,self.G_gene,self.row_spa,self.col_spa,self.A_gene,self.A_spatial)
         q=get_q(self,z)
         latent_z = z.data.cpu().numpy()
         y_pred = torch.argmax(q, dim=1).data.cpu().numpy()
@@ -254,20 +260,24 @@ class HyperSTModel_Train_sparse:
         self.init=init
         self.seed=seed
         self.beta=0.5
-
-        # self.X = torch.FloatTensor(adata.X.A).to(self.device)
         self.X = torch.FloatTensor(adata.obsm['X_pca']).to(self.device)
 
-        # (row_gene, col_gene), value_gene = torch_sparse.from_scipy(incidence_gene)
+        # Dense version
         H_gene=incidence_gene.toarray().astype(np.float32)
         G_gene=generate_G_from_H(H_gene)
-        # self.row_gene=row_gene.to(self.device)
-        # self.col_gene=col_gene.to(self.device)
         self.G_gene=torch.FloatTensor(G_gene).to(self.device)
+        
+        # Alternative: sparse version
+        # H_gene = incidence_gene.tocsr().astype(np.float32)
+        # G_gene = generate_G_from_H_sparse(H_gene)
+        # def to_sparse_tensor(matrix, device):
+        #     (row, col), values = torch_sparse.from_scipy(matrix)
+        #     return torch.sparse_coo_tensor(torch.stack([row, col]), values, matrix.shape,
+        #         dtype=torch.float32, device=device).coalesce()
+        # self.G_gene = to_sparse_tensor(G_gene, self.device)
+
 
         (row_spa, col_spa), value_spa = torch_sparse.from_scipy(incidence_spatial)
-        # H_spatial=incidence_spatial.toarray()
-        # self.H_spatial=torch.FloatTensor(H_spatial).to(self.device)
         self.row_spa=row_spa.to(self.device)
         self.col_spa=col_spa.to(self.device)
 
