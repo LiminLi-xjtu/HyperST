@@ -11,7 +11,7 @@ import cvxpy as cp
 import scipy.sparse as sparse
 from cvxpy.error import SolverError
 
-### 构建邻接矩阵
+### Construct the adjacency matrix
 @numba.njit("f4(f4[:], f4[:])")
 def euclid_dist(t1, t2):
     sum = 0
@@ -99,7 +99,7 @@ def row_l2_normalize(X, eps=1e-12):
     norms[norms < eps] = 1.0
     return X / norms
 
-### 利用SPARK-X筛选SVGs，并构造超边
+### Identify SVGs using SPARK-X and construct hyperedges
 import scipy.sparse as sp
 from scipy.sparse import spmatrix
 def construct_H_from_attribute_matrix(adata,nSE=3000):
@@ -116,7 +116,7 @@ def construct_H_from_attribute_matrix(adata,nSE=3000):
     robjects.r.library("SPARK")
 
     import rpy2.robjects.numpy2ri
-    rpy2.robjects.numpy2ri.activate()
+    # rpy2.robjects.numpy2ri.activate()
     random_seed=0
     np.random.seed(random_seed)
     r_random_seed = robjects.r['set.seed']
@@ -148,7 +148,7 @@ def construct_H_from_attribute_matrix(adata,nSE=3000):
     # X_222=row_l2_normalize(X_111)
     H=gen_l1_l2_hg(X_111,gamma=1.0,beta=0.1,n_neighbors=6)
 
-    rpy2.robjects.numpy2ri.deactivate()
+    # rpy2.robjects.numpy2ri.deactivate()
     return H,X_111
 
 
@@ -186,11 +186,13 @@ def mclust(data, num_cluster, modelNames = 'EEE', random_seed = 2020):
     import rpy2.robjects as robjects
     robjects.r.library("mclust")
     import rpy2.robjects.numpy2ri
-    rpy2.robjects.numpy2ri.activate()  
+    # rpy2.robjects.numpy2ri.activate()  
     r_random_seed = robjects.r['set.seed']
     r_random_seed(random_seed)
-    rmclust = robjects.r['Mclust']
-    res = rmclust(data, num_cluster, modelNames)
+    rmclust = robjects.r(
+        'function(x, G, modelNames) Mclust(x, G = G, modelNames = modelNames)'
+    )
+    res = rmclust(rpy2.robjects.numpy2ri.numpy2rpy(data), num_cluster, modelNames)
     return np.array(res[-2])
 
 
@@ -261,22 +263,26 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import cdist
 
 def pairwise_geographic_similarity(X):
-    # 计算成对的欧式距离矩阵
+    # Compute the pairwise Euclidean distance matrix
     euclidean_dist_matrix = cdist(X, X, metric='euclidean')
-    # 将欧式距离矩阵转换为地理相似性矩阵
+    # Convert the Euclidean distance matrix into a geographic similarity matrix
     similarity_matrix = 1.0 / (1.0 + euclidean_dist_matrix)
     return similarity_matrix
 
 # Function with L1 and L2 regularization
 def gen_l1_l2_hg(X,gamma, beta,n_neighbors):
     """
+    Adapted from gen_l1_hg in THU-HyperG:
+    https://github.com/iMoonLab/THU-HyperG/blob/master/hyperg/generation/sparse.py
+    Original license: MIT (see THU-HyperG repository).
+
+    Modification: added L2 regularization term (beta * ||x||_2) to the reconstruction objective; returns the incidence matrix H directly.
+
     :param X: numpy array, shape = (n_samples, n_features)
     :param gamma: float, the tradeoff parameter of the l1 norm on representation coefficients
     :param beta: float, the tradeoff parameter of the l2 norm (regularization)
     :param n_neighbors: int,
-    :param log: bool
-    :param with_feature: bool, optional(default=False)
-    :return: instance of HyperG
+    :return: scipy.sparse.coo_matrix, incidence matrix, shape = (n_nodes, n_edges)
     """
 
     assert n_neighbors >= 1.
