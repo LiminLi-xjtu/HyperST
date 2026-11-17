@@ -17,5 +17,8 @@ def set_arg():
     parser.add_argument('--mode_knn', type=str, default='knn', help='radius, knn')
     parser.add_argument('--update_interval',type=int,default='10')
     parser.add_argument('--first-aggregate', type=str, default='mean', help='aggregation for hyperedge h_e: max, sum, mean')
+    parser.add_argument('--lambda_1', type=float, default=0.1, help='Weight of reconstruction loss')
+    parser.add_argument('--lambda_2', type=float, default=0.1, help='Weight of gene contrastive loss')
+    parser.add_argument('--lambda_3', type=float, default=0.1, help='Weight of spatial contrastive loss')
 
     return parser
