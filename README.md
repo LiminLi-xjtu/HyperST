@@ -86,7 +86,7 @@ This notebook provides a step-by-step guide on how to run the model.
 
 ### Large-scale Datasets (Stereo-seq / Slide-seqV2)
 
-For large-scale datasets such as **Stereo-seq** and **Slide-seqV2**, we recommend using the sparse version of the model to optimize memory usage. 
+For large-scale datasets such as **Stereo-seq** and **Slide-seqV2**, we recommend using the sparse implementation of the simplified variant to reduce memory consumption.
 
 Please initialize the model as follows:
 
