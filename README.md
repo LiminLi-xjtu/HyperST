@@ -104,7 +104,7 @@ mclust_R(adata, num_cluster=args.n_domains, used_obsm='HyperST', random_seed=arg
 
 ### Additional experiments
 
-The scripts for the additional experiments are provided in the [Experiments/](./Experiments) directory.
+The scripts for the additional experiments are provided in the [experiments/](./experiments) directory.
 
 ## Data availability
 
