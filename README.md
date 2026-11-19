@@ -76,17 +76,21 @@ remotes::install_github("xzhoulab/SPARK")
 
 ## Tutorial
 
-For a detailed demonstration of **HyperST**, please refer to the tutorial notebook:
+We provide two tutorial notebooks demonstrating how to run HyperST on different spatial transcriptomics datasets.
+
+### Standard implementation
 
 * [**DLPFC_Tutorial.ipynb**](./DLPFC_Tutorial.ipynb)
 
-This notebook provides a step-by-step guide on how to run the model.
+This notebook provides a step-by-step guide to running the full HyperST model on the DLPFC dataset using HyperSTModel_Train.
 
-> **Note:** Please replace `R_HOME` and `R_USER` with your local R installation paths before running.
+### Sparse implementation for large-scale datasets
 
-### Large-scale datasets (Stereo-seq / Slide-seqV2)
+This notebook demonstrates how to run the sparse implementation of the simplified HyperST model on the mouse olfactory bulb (MOB) dataset.
 
-For large-scale datasets such as **Stereo-seq** and **Slide-seqV2**, we recommend using the sparse implementation of the simplified variant to reduce memory consumption.
+* [**MOB_Tutorial.ipynb**](./MOB_Tutorial.ipynb)
+
+For large-scale datasets, such as **Stereo-seq** and **Slide-seqV2**, we recommend this implementation to reduce memory consumption.
 
 Please initialize the model as follows:
 
