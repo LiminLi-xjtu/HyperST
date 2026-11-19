@@ -80,7 +80,7 @@ class HyperST(nn.Module):
         self.args=args
         
     def forward(self, X_gene, H_gene,vertex_spa, edges_spa,G_gene,G_spatial):
-        #第一层
+        # First hypergraph convolution layer
         H1 = self.conv1_1(X_gene, H_gene)
         H2 = self.conv1_2(X_gene, vertex_spa, edges_spa)
         h1 = F.relu(self.conv1_3(X_gene,G_gene))
@@ -89,7 +89,7 @@ class HyperST(nn.Module):
         H3=torch.stack([H1,H2],dim=1)
         H3,att1=self.att(H3)
 
-        # 第二层
+        # Second hypergraph convolution layer
         out1 = self.conv2_1(H3, H_gene)
         out2 = self.conv2_2(H1, vertex_spa, edges_spa)
         h2 = self.conv2_3(h1,G_gene)
@@ -118,14 +118,14 @@ class HyperST_sparse(nn.Module):
         self.args=args
         
     def forward(self, X_gene, H_gene,vertex_spa, edges_spa):
-        #第一层
+        # First hypergraph convolution layer
         H1 = self.conv1_1(X_gene, H_gene)
         H2 = self.conv1_2(X_gene, vertex_spa, edges_spa)
 
         H3=torch.stack([H1,H2],dim=1)
         H3,att1=self.att(H3)
 
-        # 第二层
+        # Second hypergraph convolution layer
         out1 = self.conv2_1(H3, H_gene)
         out2 = self.conv2_2(H1, vertex_spa, edges_spa)
 
